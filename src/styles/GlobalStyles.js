@@ -22,10 +22,10 @@ img{
 }
 body {
 	font-family: 'League Spartan', sans-serif;
-	max-width: 500px;
+	background-color: #F0F0F0;
 	margin-left: auto;
 	margin-right: auto;
-	overflow-x: hidden;
+	
 }
 `;
 

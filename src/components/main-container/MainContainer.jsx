@@ -1,50 +1,107 @@
 import { useState } from 'react';
-import { StyledHeader } from './styles';
+import {
+	StyledBigText,
+	StyledButtonContainer,
+	StyledHeader,
+	StyledImg,
+	StyledImgContainer,
+	StyledInput,
+	StyledInputContainer,
+	StyledMainContainer,
+	StyledSpanText
+} from './styles';
 
 const MainContainer = () => {
-	const [age, setAge] = useState({
-		days: 0,
-		months: 0,
-		years: 0
-	});
+	// const [age, setAge] = useState({
+	// 	days: 0,
+	// 	months: 0,
+	// 	years: 0,
+	// 	print: false
+	// });
+	const [year, setYear] = useState(0);
+	const [month, setMonth] = useState(0);
+	const [days, setDays] = useState(0);
+	const [print, setPrint] = useState(false);
 
-	const dateObj = new Date();
-	const currentYear = dateObj.getFullYear();
-	const currentMonth = dateObj.getMonth();
-	const currentDay = dateObj.getDate();
-	let CurrentAge;
+	const date = new Date();
+	let birdthdayDay;
+	let birdthdayMonth;
+	let birdthdayYear;
 
 	return (
-		<div>
+		<StyledMainContainer>
 			<StyledHeader>
-				<div>
+				<StyledInputContainer>
 					<label htmlFor=''>DAY</label>
-					<input type='text' />
-				</div>
-				<div>
+					<StyledInput onChange={e => setDays(e.target.value)} type='text' />
+				</StyledInputContainer>
+				<StyledInputContainer>
 					<label htmlFor=''>MONTH</label>
-					<input
-						onChange={e => setAge({ ...age, months: e.target.value })}
-						type='text'
-					/>
-				</div>
-				<div>
+					<StyledInput onChange={e => setMonth(e.target.value)} type='text' />
+				</StyledInputContainer>
+				<StyledInputContainer>
 					<label htmlFor=''>YEAR</label>
-					<input type='text' />
-				</div>
+					<StyledInput onChange={e => setYear(e.target.value)} type='text' />
+				</StyledInputContainer>
 			</StyledHeader>
-			<button onClick={() => getMonth(age.months)}>GO!</button>
+			<StyledButtonContainer>
+				<StyledImgContainer
+					onClick={() => {
+						const birthday = new Date(`${month}/${days}/${year}`);
+						console.log(birthday);
+						const totalDays = diferenceBetweenDates(date, birthday);
+						const totalTime = convertDays(totalDays);
+						//updateTime(setAge, age, totalTime);
+						setDays(totalTime.ageDays);
+						setMonth(totalTime.ageMonths);
+						setYear(totalTime.ageYears);
+						setPrint(true);
+					}}
+				>
+					<StyledImg src='/icon-arrow.svg' alt='' />
+				</StyledImgContainer>
+			</StyledButtonContainer>
+
 			<div>
-				<p>{age.years}years</p>
-				<p>{age.months}months</p>
-				<p>{age.days}days</p>
+				<StyledBigText>
+					<StyledSpanText>{print ? year : '0'}</StyledSpanText> years
+				</StyledBigText>
+				<StyledBigText>
+					<StyledSpanText>{print ? month : '0'}</StyledSpanText>months
+				</StyledBigText>
+				<StyledBigText>
+					{' '}
+					<StyledSpanText>{print ? days : '0'}</StyledSpanText>days
+				</StyledBigText>
 			</div>
-		</div>
+		</StyledMainContainer>
 	);
 };
 
-const getMonth = (value, currentMonth, setAge, age) => {
-	setAge(age.month);
+const updateTime = (setAge, age, totalTime) => {
+	setAge({ ...age, years: totalTime.ageYears });
+	setAge({ ...age, months: totalTime.ageMonths });
+	setAge({ ...age, days: totalTime.ageDays });
+	console.log(totalTime, age);
+};
+
+const diferenceBetweenDates = (date, birthday) => {
+	const milisecondsPerDay = 86400000;
+	const milisecondsBetweenDays = date - birthday;
+	const diferenceInDays = Math.floor(
+		milisecondsBetweenDays / milisecondsPerDay
+	);
+	return diferenceInDays;
+};
+
+const convertDays = ageDays => {
+	const ageYears = Math.floor(ageDays / 365);
+	ageDays = ageDays % 365;
+	const ageMonths = Math.floor(ageDays / 30);
+	ageDays = ageDays % 30;
+	console.log(ageYears, ageMonths, ageDays);
+
+	return { ageYears, ageMonths, ageDays };
 };
 
 export default MainContainer;
